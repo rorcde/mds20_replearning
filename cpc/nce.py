@@ -8,6 +8,7 @@ class InfoNCE(nn.Module):
         super(InfoNCE, self).__init__()
         pass
 
-    def forward(self, positive, negative):
-        probs = log_softmax(torch.stack(positive, negative, -1), -1)  # TODO: there is a simplier formula that doesn't require to compute all probabilities
+    @staticmethod
+    def forward(positive, negative):
+        probs = log_softmax(torch.stack((positive, negative), -1), -1)  # TODO: there is a simplier formula that doesn't require to compute all probabilities
         return probs[...:-1]
