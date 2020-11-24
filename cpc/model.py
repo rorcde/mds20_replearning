@@ -1,5 +1,6 @@
 from torch import nn
 from .encoder import PaperEncoder
+from .nce import info_nce
 
 
 class AutoRegressiveModel(nn.Module):
@@ -15,9 +16,11 @@ class AutoRegressiveModel(nn.Module):
             batch_first=True
         )
 
+        self.Wk = nn.Linear(self.ar_dim, self.self.enc_dim)
+
     def forward(self, past_sentences_enc):
-        context = self.GRU(past_sentences_enc)
-        return context
+        context, _ = self.GRU(past_sentences_enc)
+        return self.Wk(context)
 
 
 class CPC(nn.Module):
@@ -41,12 +44,13 @@ class CPC(nn.Module):
 
         self.ar = AutoRegressiveModel(config)
 
-        self.bilinear = nn.Bilinear(  # TODO: check that dimensions or OK. If not OK, replace by linear
-            in1_features=self.enc_dim,
-            in2_features=self.ar_dim,
-            out_features=1,
-            bias=False
-        )
+    def forward(self, batch, k=1):
+        inp, outp = batch[:-k], batch[k:]
+        inp_enc, outp_enc = self.encoder(inp), self.encoder(outp)
 
-    def forward(self):
-        pass
+        predicted_enc = self.ar(inp_enc)
+
+        return info_nce(predicted_enc, outp_enc)
+
+
+
