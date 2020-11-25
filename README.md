@@ -1,5 +1,12 @@
 # mds20_replearning
-This is the repository for the Models of Sequence Data 2020 Edition for the project Representation Learning with Contrastive Predictive Coding
+This is the repository for the Models of Sequence Data 2020 Edition for the project Representation Learning with Contrastive Predictive Coding. 
+
+## Overview 
+Creating good feature representation is one of the most core objectives in deep learning. The popular approach to deal with it is to use contrastive learning with Mutual Information (MI) as an objective function. One possible implementation of this is suggested in the paper "Representation Learning with Contrastive Predictive Coding".  In this work, we investigate the proposed model for several NLP  tasks and try to improve it using modern achievements of deep learning.
+
+## CPC model 
+
+
 
 ## Previous implementations
 
