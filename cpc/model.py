@@ -45,6 +45,9 @@ class CPC(nn.Module):
         self.ar = AutoRegressiveModel(config)
 
     def forward(self, batch, k=1):
+        """
+        batch - sequences x encoder_dim
+        """
         inp, outp = batch[:-k], batch[k:]
         inp_enc, outp_enc = self.encoder(inp), self.encoder(outp)
 

@@ -11,7 +11,7 @@ def info_nce(predicted_samples, encoded_samples):
     """
 
     scores = torch.mm(predicted_samples,
-                      encoded_samples.transpose(0, 1))  # (batch, enc_len) x (batch, enc_len) -> (batch, batch)
+                      encoded_samples.transpose(0, 1))  # (batch, enc_dim) x (batch, enc_dim) -> (batch, batch)
 
     """
         Scores is a matrix: s_{ij} is a dot-product of i-th predicted sample and j-th sample from random samples.
