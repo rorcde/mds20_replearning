@@ -2,6 +2,7 @@ import json
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
+import text_process_utility
 
 
 def read_config_file(config_filename="config.json"):
@@ -47,10 +48,44 @@ def expand_tensor(tensor_to_expand):
 
 
 def create_mask(var, lengths):
-    mask = torch.zeros(var.size())
+    mask = torch.zeros(var.size()).int()
     for i, l in enumerate(lengths):
         mask[i, :l] = 1
 
     mask = Variable(mask).float()
     mask = mask.cuda(CUDA_DEVICE)
     return mask
+
+
+global losses_validation
+global last_best_loss
+losses_validation = []
+last_best_loss = None
+
+
+def check_model(model, i, loss, previous_sentence, next_sentence, predicted_previous_ids, predicted_next_ids):
+    curr_loss = loss.item()
+    losses_validation.append(curr_loss)
+    losses_validation = losses_validation[-20:]
+    print("Iteration {}: last_best_loss = {}, current_loss = {}".format(i, last_best_loss, curr_loss))
+
+    print(
+        "Previous sentence = {}\n Next_sentence = {}\n Predicted previous sentence = {}\n Predicted next sentence = {}".format(
+            text_process_utility.decode_sentences(previous_sentence, d.word_dictionary),
+            text_process_utility.decode_sentences(next_sentence, d.word_dictionary),
+            text_process_utility.decode_sentences(predicted_previous_ids, d.word_dictionary),
+            text_process_utility.decode_sentences(predicted_next_ids, d.word_dictionary)
+        ))
+
+    try:
+        curr_mean_losses = sum(losses_validation) / len(losses_validation)
+        if last_best_loss is None or last_best_loss > curr_mean_losses:
+            print("Loss improved from {} to {}".format(last_best_loss, curr_mean_losses))
+
+            save_loc = "./saved_models/skip-best"
+            print("Saving model at {}".format(save_loc))
+            torch.save(model.state_dict(), save_loc)
+            last_best_loss = curr_mean_losses
+            
+    except Exception as e:
+        print("Couldn't save model because {}".format(e))

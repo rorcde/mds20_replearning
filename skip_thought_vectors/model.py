@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.autograd import Variable
 import utility
 
 
@@ -131,9 +130,9 @@ class SkipThoughtModel(nn.Module):
         loss_next = self.__calculate_loss(predicted_next, input_sentences, sentences_lens)
         loss = loss_next + loss_previous
 
-        _, prev_pred_ids = predicted_previous[0].max(1)
-        _, next_pred_ids = predicted_next[0].max(1)
+        _, predicted_previous_ids = predicted_previous[0].max(1)
+        _, predicted_next_ids = predicted_next[0].max(1)
 
-        return loss, input_sentences[0], input_sentences[1], prev_pred_ids, next_pred_ids
+        return loss, input_sentences[0], input_sentences[1], predicted_previous_ids, predicted_next_ids
 
 

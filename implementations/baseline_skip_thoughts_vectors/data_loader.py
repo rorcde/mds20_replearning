@@ -1,9 +1,13 @@
+""""
+Here we implement a class for loading data.
+"""
+
 import torch
 from torch.autograd import Variable
 from vocab import *
+from config import *
 import numpy as np
 import random
-import utility
 
 np.random.seed(0)
 
@@ -12,13 +16,18 @@ class DataLoader:
     EOS = 0  # to mean end of sentence
     UNK = 1  # to mean unknown token
 
-    def __init__(self, text_file, sentences=None, word_dict=None):
+    maxlen = MAXLEN
 
-        self.config = utility.read_config_file()
+    def __init__(self, text_file=None, sentences=None, word_dict=None):
 
-        with open(text_file, "rt") as f:
-            sentences = f.readlines()
+        if text_file:
+            print("Loading text file at {}".format(text_file))
+            with open(text_file, "rt") as f:
+                sentences = f.readlines()
+            print("Making dictionary for these words")
             word_dict = build_and_save_dictionary(sentences, source=text_file)
+
+        assert sentences and word_dict, "Please provide the file to extract from or give sentences and word_dict"
 
         self.sentences = sentences
         self.word_dict = word_dict
@@ -50,16 +59,16 @@ class DataLoader:
 
         def convert_index_to_word(idx):
 
-            idx = idx.item()
+            idx = idx.data[0]
             if idx == 0:
                 return "EOS"
             elif idx == 1:
                 return "UNK"
-
+            
             search_idx = idx - 2
             if search_idx >= len(self.revmap):
                 return "NA"
-
+            
             word, idx_ = self.revmap[search_idx]
 
             assert idx_ == idx
