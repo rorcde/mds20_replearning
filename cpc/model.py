@@ -34,12 +34,12 @@ class CPC(nn.Module):
         self.max_sen_len = config['max_sen_len']
 
         self.encoder = PaperEncoder(
-            self.vocab_size,
-            self.emb_dim,
-            self.enc_dim,
-            self.max_sen_len,
-            config['pad_idx'],
-            config['kernel_size']
+            vocab_size=self.vocab_size,
+            embedding_dim=self.emb_dim,
+            encoder_dim=self.enc_dim,
+            sentence_len=self.max_sen_len,
+            pad_idx=config['pad_idx'],
+            kernel_size=config['kernel_size']
         )
 
         self.ar = AutoRegressiveModel(config)
@@ -48,8 +48,8 @@ class CPC(nn.Module):
         """
         batch - sequences x encoder_dim
         """
-        inp, outp = batch[:-k], batch[k:]
-        inp_enc, outp_enc = self.encoder(inp), self.encoder(outp)
+        enc = self.encoder(batch)
+        inp_enc, outp_enc = enc[:-k], enc[k:]
 
         predicted_enc = self.ar(inp_enc)
 

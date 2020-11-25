@@ -8,9 +8,9 @@ class PaperEncoder(nn.Module):
     def __init__(self, vocab_size, embedding_dim=620, weights=None, encoder_dim=2400, sentence_len=32, pad_idx=0, kernel_size=1, **kwargs):
         super(PaperEncoder, self).__init__()
 
-        self.vocab_size = vocab_size
         self.encoder_dim = encoder_dim
         self.sentence_len = sentence_len
+
         if weights is None:
             self.embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=pad_idx)
         else:

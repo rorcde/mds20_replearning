@@ -26,6 +26,10 @@ class PosNegDataset(data.Dataset):
         self.tokenized_text = get_tokenized_text(raw_text)
         self.w2i_mapping = build_vocabulary(self.tokenized_text, pad_token, unk_token, eos_token)
         self.labels = labels
+        self.vocab_size = len(self.w2i_mapping)
+
+    def __len__(self):
+        return len(self.tokenized_text)
 
     def __getitem__(self, i):
         return [self.w2i_mapping[w] for w in self.tokenized_text[i]], self.labels[i]
