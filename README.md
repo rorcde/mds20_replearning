@@ -6,7 +6,27 @@ Creating good feature representation is one of the most core objectives in deep 
 
 ## CPC model 
 
+### Our progress
 
+Some preliminary versions of our code are already available! To launch the experiment, one need to do several simple steps:
+
+```python
+import sys
+sys.path.append('path_to_folder_where_repo_lies')
+sys.path.append('path_to_folder_where_repo_lies'+'mds20_replearning')
+
+import pytorch_lightning as pl
+from mds20_replearning.scripts.pl_data import PosNegDataModule
+from mds20_replearning.scripts.pl_model import CPCModel
+from mds20_replearning.data.language.load import load_polarity
+
+model = CPCModel(len(dataset.w2i_mapping), emb_dim=620, enc_dim=2400, ar_dim=2400, kernel_size=5, lr=1e-3) 
+data_module = PosNegDataModule(128, load_polarity, 'path_to_polarity_data', 
+                               w2i_mapping=predefined_vocab_mapping, valid_split=0.3)
+
+trainer = pl.Trainer()  # set required resources here
+trainer.fit(model, datamodule=data_module)
+```
 
 ## Previous implementations
 
