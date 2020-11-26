@@ -4,11 +4,11 @@ from .nce import info_nce
 
 
 class AutoRegressiveModel(nn.Module):
-    def __init__(self, config):
+    def __init__(self, enc_dim=2400, ar_dim=2400):
         super(AutoRegressiveModel, self).__init__()
 
-        self.enc_dim = config.get('enc_dim', 2400)
-        self.ar_dim = config.get('ar_dim', self.enc_dim)
+        self.enc_dim = enc_dim
+        self.ar_dim = ar_dim
 
         self.GRU = nn.GRU(
             input_size=self.enc_dim,
@@ -24,25 +24,23 @@ class AutoRegressiveModel(nn.Module):
 
 
 class CPC(nn.Module):
-    def __init__(self, config):
+    def __init__(self, vocab_size, emb_dim=620, enc_dim=2400, ar_dim=2400, kernel_size=1, pad_idx=0):
         super(CPC, self).__init__()
 
-        self.vocab_size = config['vocab_size']
-        self.emb_dim = config.get('emb_dim', 620)
-        self.enc_dim = config.get('enc_dim', 2400)
-        self.ar_dim = config.get('ar_dim', self.enc_dim)
-        self.max_sen_len = config['max_sen_len']
+        self.vocab_size = vocab_size
+        self.emb_dim = emb_dim
+        self.enc_dim = enc_dim
+        self.ar_dim = ar_dim
 
         self.encoder = PaperEncoder(
             vocab_size=self.vocab_size,
             embedding_dim=self.emb_dim,
             encoder_dim=self.enc_dim,
-            sentence_len=self.max_sen_len,
-            pad_idx=config['pad_idx'],
-            kernel_size=config['kernel_size']
+            pad_idx=pad_idx,
+            kernel_size=kernel_size
         )
 
-        self.ar = AutoRegressiveModel(config)
+        self.ar = AutoRegressiveModel(self.enc_dim, self.ar_dim)
 
     def forward(self, batch, k=1):
         """
