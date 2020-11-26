@@ -80,7 +80,7 @@ The Book Corpus dataset containes about more than 17800 books from various categ
 
 ## 3_ Money tracsactions dataset:
 
-`The description van be found in data/Money_transaction_description.ipynb`
+`The description can be found in data/Money_transaction_description.ipynb`
 
 
 * the dataset can be downloaded from this [Link](https://www.kaggle.com/c/python-and-analyze-data-final-project)
