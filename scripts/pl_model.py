@@ -24,7 +24,7 @@ class CPCModel(pl.LightningModule):
     def forward(self, batch):
         return self.cpc
 
-    def training_step(self, batch):
+    def training_step(self, batch, batch_idx):
         text_batch, labels = batch
         info_nce_loss = self.cpc(text_batch)
 
@@ -37,7 +37,7 @@ class CPCModel(pl.LightningModule):
 
         return output
 
-    def validation_step(self, batch):
+    def validation_step(self, batch, batch_idx):
         text_batch, labels = batch
         info_nce_loss = self.cpc(text_batch)
 
