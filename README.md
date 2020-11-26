@@ -20,7 +20,7 @@ from mds20_replearning.scripts.pl_data import PosNegDataModule
 from mds20_replearning.scripts.pl_model import CPCModel
 from mds20_replearning.data.language.load import load_polarity
 
-model = CPCModel(len(dataset.w2i_mapping), emb_dim=620, enc_dim=2400, ar_dim=2400, kernel_size=5, lr=1e-3) 
+model = CPCModel(predefined_vocab_size, emb_dim=620, enc_dim=2400, ar_dim=2400, kernel_size=5, lr=2e-4) 
 data_module = PosNegDataModule(128, load_polarity, 'path_to_polarity_data', 
                                w2i_mapping=predefined_vocab_mapping, valid_split=0.3)
 
