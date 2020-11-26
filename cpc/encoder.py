@@ -5,12 +5,13 @@ class PaperEncoder(nn.Module):
     """
     Encoder architecture from "Representation Learning with CPC" paper
     """
-    def __init__(self, vocab_size, embedding_dim=620, weights=None, encoder_dim=2400, sentence_len=32, pad_idx=0,
+    def __init__(self, vocab_size, embedding_dim=620, weights=None, encoder_dim=2400,  # sentence_len=32,
+                 pad_idx=0,
                  kernel_size=1, **kwargs):
         super(PaperEncoder, self).__init__()
 
         self.encoder_dim = encoder_dim
-        self.sentence_len = sentence_len
+        # self.sentence_len = sentence_len
 
         if weights is None:
             self.embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=pad_idx)
@@ -20,7 +21,7 @@ class PaperEncoder(nn.Module):
         self.conv_block = nn.Sequential(
             nn.Conv1d(in_channels=embedding_dim, out_channels=encoder_dim, kernel_size=kernel_size),
             nn.ReLU(),
-            nn.AvgPool1d(kernel_size=sentence_len)
+            nn.AdaptiveAvgPool1d(1),  # nn.AvgPool1d(kernel_size=sentence_len)
         )
 
     def forward(self, x):

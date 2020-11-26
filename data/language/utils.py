@@ -22,9 +22,16 @@ def build_vocabulary(tokenized_text, pad_token='[PAD]', unk_token='[UNK]', eos_t
 
 
 class PosNegDataset(data.Dataset):
-    def __init__(self, raw_text, labels, pad_token='[PAD]', unk_token='[UNK]', eos_token='[EOS]'):
+    def __init__(self, raw_text, labels, w2i_mapping=None, pad_token='[PAD]', unk_token='[UNK]', eos_token='[EOS]'):
         self.tokenized_text = get_tokenized_text(raw_text)
-        self.w2i_mapping = build_vocabulary(self.tokenized_text, pad_token, unk_token, eos_token)
+        if w2i_mapping is not None:
+            self.w2i_mapping = w2i_mapping
+        else:
+            self.w2i_mapping = build_vocabulary(self.tokenized_text, pad_token, unk_token, eos_token)
+
+        self.pad_idx = self.w2i_mapping[pad_token]
+        self.unk_idx = self.w2i_mapping[unk_token]
+        self.eos_idx = self.w2i_mapping[eos_token]
         self.labels = labels
         self.vocab_size = len(self.w2i_mapping)
 
@@ -32,7 +39,7 @@ class PosNegDataset(data.Dataset):
         return len(self.tokenized_text)
 
     def __getitem__(self, i):
-        return [self.w2i_mapping[w] for w in self.tokenized_text[i]], self.labels[i]
+        return [self.w2i_mapping.get(w, self.unk_idx) for w in self.tokenized_text[i]], self.labels[i]
 
 
 def collate_fn(batch):
