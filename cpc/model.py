@@ -16,7 +16,7 @@ class AutoRegressiveModel(nn.Module):
             batch_first=True
         )
 
-        self.Wk = nn.Linear(self.ar_dim, self.self.enc_dim)
+        self.Wk = nn.Linear(self.ar_dim, self.enc_dim)
 
     def forward(self, past_sentences_enc):
         context, _ = self.GRU(past_sentences_enc)
