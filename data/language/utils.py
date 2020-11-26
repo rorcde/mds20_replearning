@@ -15,14 +15,14 @@ def get_tokenized_text(text):
     return tokenized_text
 
 
-def build_vocabulary(tokenized_text, pad_token='[PAD]', unk_token='[PAD]', eos_token='[EOS]'):
+def build_vocabulary(tokenized_text, pad_token='[PAD]', unk_token='[UNK]', eos_token='[EOS]'):
     all_words = [pad_token, unk_token, eos_token] + list(set([x for sentence in tokenized_text for x in sentence]))
     w2i_mapping = {v: k for k, v in enumerate(all_words)}
     return w2i_mapping
 
 
 class PosNegDataset(data.Dataset):
-    def __init__(self, raw_text, labels, pad_token='[PAD]', unk_token='[PAD]', eos_token='[EOS]'):
+    def __init__(self, raw_text, labels, pad_token='[PAD]', unk_token='[UNK]', eos_token='[EOS]'):
         self.tokenized_text = get_tokenized_text(raw_text)
         self.w2i_mapping = build_vocabulary(self.tokenized_text, pad_token, unk_token, eos_token)
         self.labels = labels
@@ -49,6 +49,3 @@ def collate_fn(batch):
 dataset = PosNegDataset(raw_text)
 dataloader = data.Dataloader(dataset, batch_size, collate_fn=utils.collate_fn)
 """
-
-
-

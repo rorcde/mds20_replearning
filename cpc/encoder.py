@@ -5,7 +5,8 @@ class PaperEncoder(nn.Module):
     """
     Encoder architecture from "Representation Learning with CPC" paper
     """
-    def __init__(self, vocab_size, embedding_dim=620, weights=None, encoder_dim=2400, sentence_len=32, pad_idx=0, kernel_size=1, **kwargs):
+    def __init__(self, vocab_size, embedding_dim=620, weights=None, encoder_dim=2400, sentence_len=32, pad_idx=0,
+                 kernel_size=1, **kwargs):
         super(PaperEncoder, self).__init__()
 
         self.encoder_dim = encoder_dim
@@ -16,7 +17,7 @@ class PaperEncoder(nn.Module):
         else:
             self.embedding = nn.Embedding.from_pretrained(weights)  # place for your word2vec embeddings
 
-        self.conv_block = nn.Sequiential(
+        self.conv_block = nn.Sequential(
             nn.Conv1d(in_channels=embedding_dim, out_channels=encoder_dim, kernel_size=kernel_size),
             nn.ReLU(),
             nn.AvgPool1d(kernel_size=sentence_len)
@@ -31,7 +32,8 @@ class PaperEncoder(nn.Module):
 
 
 class RecurrentEncoder(nn.Module):
-    def __init__(self, vocab_size, embedding_dim=620, weights=None, encoder_dim=2400, sentence_len=32, pad_idx=0, **kwargs):
+    def __init__(self, vocab_size, embedding_dim=620, weights=None, encoder_dim=2400, sentence_len=20, pad_idx=0,
+                 **kwargs):
         super(RecurrentEncoder, self).__init__()
 
         self.vocab_size = vocab_size
@@ -52,5 +54,3 @@ class RecurrentEncoder(nn.Module):
         x = self.embedding(x)
         _, (h, _) = self.rnn(x)
         return h
-
-

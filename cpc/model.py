@@ -51,9 +51,6 @@ class CPC(nn.Module):
         enc = self.encoder(batch)
         inp_enc, outp_enc = enc[:-k], enc[k:]
 
-        predicted_enc = self.ar(inp_enc)
+        predicted_enc = self.ar(inp_enc.unsqueeze(0)).squeeze(0)  # TODO: batch learning
 
         return info_nce(predicted_enc, outp_enc)
-
-
-
