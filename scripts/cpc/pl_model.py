@@ -22,7 +22,7 @@ class CPCModel(pl.LightningModule):
         return Adam(self.parameters(), lr=self.lr)
 
     def forward(self, batch):
-        return self.cpc
+        return self.cpc(batch)
 
     def training_step(self, batch, batch_idx):
         text_batch, labels = batch
