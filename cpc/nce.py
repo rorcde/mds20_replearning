@@ -18,4 +18,4 @@ def info_nce(predicted_samples, encoded_samples):
         E_i is a positive sample for P_i; E_j, j != i, is considered as a negative sample for P_i
     """
     logprobs = log_softmax(scores, 1)
-    return torch.diagonal(logprobs).mean()
+    return -torch.diagonal(logprobs).mean()
