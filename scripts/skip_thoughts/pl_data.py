@@ -1,8 +1,9 @@
 import pytorch_lightning as pl
 import numpy as np
 from torch.utils.data import Subset, DataLoader
+import torch
 
-from skip_thought_vectors.dataloader import BookCorpusDataset
+from mds20_replearning.skip_thought_vectors.dataloader import BookCorpusDataset
 
 
 class BookCorpusDataModule(pl.LightningDataModule):
@@ -29,7 +30,7 @@ class BookCorpusDataModule(pl.LightningDataModule):
     def setup(self, stage=None):
         self.dataset = BookCorpusDataset(self.path, sentences=self.sentences, word_dict=self.word_dict)
         _idx = np.arange(len(self.dataset))
-        self._train_idx = _idx[:-self.valid_split*len(self.dataset)]
+        self._train_idx = _idx[:-int(self.valid_split*len(self.dataset))]
         self.train_ds = Subset(self.dataset, self._train_idx)
         self._valid_idx = np.setdiff1d(_idx, self._train_idx)
         self.valid_ds = Subset(self.dataset, self._valid_idx)
