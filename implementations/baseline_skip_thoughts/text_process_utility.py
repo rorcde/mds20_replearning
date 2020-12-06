@@ -1,15 +1,11 @@
 import torch
-import mds20_replearning.skip_thought_vectors.utility as utility
+from torch.autograd import Variable
+import numpy as np
+import random
+import utility
 from collections import OrderedDict
-import json 
 
-def read_config_file(config_filename="config.json"):
-    with open('skip_thought_vectors/config.json', 'r') as jsonfile:
-        jsstring = jsonfile.read()
-        config_dict = json.loads(jsstring.replace('True', 'true'))
-    return config_dict
-
-config = read_config_file()
+config = utility.read_config_file()
 USE_CUDA = config["use_cuda"]
 CUDA_DEVICE = config["cuda_device"]
 
@@ -65,23 +61,11 @@ def build_dictionary(sentences):
 
     worddict = OrderedDict()
     for idx, word in enumerate(sorted_words):
-        worddict[word] = idx + 2
+        worddict[word] = idx + 2 
     worddict["EOS"] = 0
     worddict["UNK"] = 1
 
     return worddict
-
-
-#def build_dictionary(sentences, pad_token='PAD',
-#                     unk_token='UNK', eos_token='EOS'):
-#    list_of_words = []
-#    for sentence in sentences:
-#        for word in sentence.split():
-#            list_of_words.append(word)
-
-#    all_words = [pad_token, unk_token, eos_token] + list(set(list_of_words))
-#    word_dictionary = {w: i for i, w in enumerate(all_words)}
-#    return word_dictionary
 
 
 

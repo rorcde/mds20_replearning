@@ -7,6 +7,5 @@
     "clipping_parameter": 10,
     "batch_first": true,
     "use_cuda":true,
-    "cuda_device": 1,
-    "special_words_ids": {"EOS":  0, "UNK":  1}
+    "cuda_device": 1
 }

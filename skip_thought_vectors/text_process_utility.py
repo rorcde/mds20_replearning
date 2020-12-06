@@ -1,8 +1,15 @@
 import torch
-import utility
+import mds20_replearning.skip_thought_vectors.utility as utility
 from collections import OrderedDict
+import json 
 
-config = utility.read_config_file()
+def read_config_file(config_filename="config.json"):
+    with open('skip_thought_vectors/config.json', 'r') as jsonfile:
+        jsstring = jsonfile.read()
+        config_dict = json.loads(jsstring.replace('True', 'true'))
+    return config_dict
+
+config = read_config_file()
 USE_CUDA = config["use_cuda"]
 CUDA_DEVICE = config["cuda_device"]
 

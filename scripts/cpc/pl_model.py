@@ -4,6 +4,7 @@ import pytorch_lightning as pl
 from torch.optim import Adam
 
 from cpc.model import CPC
+import torch
 
 
 class CPCModel(pl.LightningModule):
@@ -25,7 +26,7 @@ class CPCModel(pl.LightningModule):
         return self.cpc(batch)
 
     def training_step(self, batch, batch_idx):
-        text_batch, labels = batch
+        text_batch = batch
         info_nce_loss = self.cpc(text_batch)
 
         tqdm_dict = {'info_nce': info_nce_loss}
@@ -34,13 +35,16 @@ class CPCModel(pl.LightningModule):
             'progress_bar': tqdm_dict,
             'log': tqdm_dict,
         })
+        torch.cuda.empty_cache()
+        
 
         return output
 
     def validation_step(self, batch, batch_idx):
-        text_batch, labels = batch
+        text_batch = batch
         info_nce_loss = self.cpc(text_batch)
 
         output = {'val_info_nce': info_nce_loss}
+        torch.cuda.empty_cache()
 
         return output

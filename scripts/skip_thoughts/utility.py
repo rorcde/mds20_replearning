@@ -2,11 +2,11 @@ import json
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
-import mds20_replearning.skip_thought_vectors.text_process_utility as text_process_utility
+import text_process_utility
 
 
 def read_config_file(config_filename="config.json"):
-    with open('skip_thought_vectors/config.json', 'r') as jsonfile:
+    with open('config.json', 'r') as jsonfile:
         jsstring = jsonfile.read()
         config_dict = json.loads(jsstring.replace('True', 'true'))
     return config_dict

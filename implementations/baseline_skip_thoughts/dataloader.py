@@ -1,7 +1,6 @@
-import mds20_replearning.skip_thought_vectors.utility as utility
-import mds20_replearning.skip_thought_vectors.text_process_utility as text_process_utility
+import utility
+import text_process_utility
 from torch.utils.data import Dataset
-import torch
 
 
 config = utility.read_config_file()
@@ -9,7 +8,7 @@ USE_CUDA = config["use_cuda"]
 CUDA_DEVICE = config["cuda_device"]
 
 
-class BookCorpusDataset(Dataset):
+class DataLoader(Dataset):
     EOS = 0  # to mean end of sentence
     UNK = 1  # to mean unknown token
 
@@ -35,5 +34,5 @@ class BookCorpusDataset(Dataset):
                                                    self.config["vocabulary_dim"], self.config["max_len_for_rnn"],
                                                    self.EOS, self.UNK)
         length = min(len(sent.split()), self.config["max_len_for_rnn"])
-        length = torch.LongTensor(length).cuda(CUDA_DEVICE)
+
         return ind, length

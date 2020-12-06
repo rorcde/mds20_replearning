@@ -1,8 +1,9 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.autograd import Variable
 import utility
-
+from torchrua import reverse_packed_sequence, pack_padded_sequence, pad_packed_sequence
 
 class SkipThoughtEncoder(nn.Module):
 
@@ -25,7 +26,9 @@ class SkipThoughtEncoder(nn.Module):
         utility.orthogonal_initialization(self.rnn)
         nn.init.uniform_(self.embedding.weight.data, -0.1, 0.1)
 
+    
     def forward(self, input_sentences, sentences_lens):
+
         if self.config["batch_first"]:
             input_sentences = torch.transpose(input_sentences, 0, 1)
 
@@ -34,10 +37,9 @@ class SkipThoughtEncoder(nn.Module):
 
         reversed_word_embeddings = utility.reverse_variables(word_embeddings)
         output, h = self.rnn(reversed_word_embeddings)
-        thought_vectors = h[-1]
+        thought_vectors = h[-1] 
 
         return thought_vectors, word_embeddings
-
 
 class SkipThoughtDecoder(nn.Module):
 
@@ -53,7 +55,7 @@ class SkipThoughtDecoder(nn.Module):
         self.rnn_for_previous = nn.GRU(self.thought_vectors_size + self.embedding_dim,
                                        self.embedding_dim, bidirectional=False)
         self.rnn_for_next = nn.GRU(self.thought_vectors_size + self.embedding_dim,
-                                   self.embedding_dim, bidirectional=False)
+                                       self.embedding_dim, bidirectional=False)
         self.output_layer = nn.Linear(self.embedding_dim, self.vocabulary_dim)
 
     def initialize_parameters(self):
@@ -94,19 +96,19 @@ class SkipThoughtDecoder(nn.Module):
 
         return predicted_previous, predicted_next
 
-
 class SkipThoughtModel(nn.Module):
 
     def __init__(self):
         super().__init__()
-
+        
         self.encoder = SkipThoughtEncoder()
         self.decoder = SkipThoughtDecoder()
         self.config = self.encoder.config
-
+        
     def initialize_parameters(self):
         self.encoder.initialize_parameters()
         self.decoder.initialize_parameters()
+        
 
     def __calculate_loss(self, predictions, input_sentences, sentences_lens, predicted_next=False):
         if predicted_next:
@@ -115,6 +117,7 @@ class SkipThoughtModel(nn.Module):
         else:
             sentences_lens = sentences_lens[:-1]
             input_sentences = input_sentences[:-1, :]
+
 
         masked_predictions = predictions * utility.create_mask(predictions, sentences_lens)
         masked_predictions = masked_predictions.view(-1, self.config["vocabulary_dim"])
@@ -133,6 +136,6 @@ class SkipThoughtModel(nn.Module):
         _, predicted_previous_ids = predicted_previous[0].max(1)
         _, predicted_next_ids = predicted_next[0].max(1)
 
-        return loss, loss_next, loss_previous, input_sentences[0], input_sentences[1], predicted_previous_ids, predicted_next_ids
+        return loss, input_sentences[0], input_sentences[1], predicted_previous_ids, predicted_next_ids
 
 

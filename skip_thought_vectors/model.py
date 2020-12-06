@@ -133,6 +133,6 @@ class SkipThoughtModel(nn.Module):
         _, predicted_previous_ids = predicted_previous[0].max(1)
         _, predicted_next_ids = predicted_next[0].max(1)
 
-        return loss, input_sentences[0], input_sentences[1], predicted_previous_ids, predicted_next_ids
+        return loss, loss_next, loss_previous, input_sentences[0], input_sentences[1], predicted_previous_ids, predicted_next_ids
 
 
