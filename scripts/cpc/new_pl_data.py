@@ -7,15 +7,18 @@ from itertools import chain
 import numpy as np
 import torch
 
+
 class BookCorpusDataset(Dataset):
     EOS = 0  # to mean end of sentence
     UNK = 1  # to mean unknown token
 
-    def __init__(self, text_file, sentences=None, word_dict=None, pad_token='[PAD]', unk_token='[UNK]', eos_token='[EOS]'):
+    def __init__(self, text_file, sentences=None, word_dict=None, vocab_size=None,
+                 pad_token='[PAD]', unk_token='[UNK]', eos_token='[EOS]'):
 
         with open(text_file, "rt") as f:
             sentences = f.readlines()
-            word_dictionary = build_vocabulary(sentences)
+            word_dictionary = build_vocabulary(sentences, vocab_size=vocab_size, pad_token=pad_token,
+                                               unk_token=unk_token, eos_token=eos_token)
 
         self.word_dictionary = word_dictionary
             
@@ -37,6 +40,7 @@ def collate_fn(batch):
     max_length = max(map(len, batch))
     text_batch = np.stack([np.pad(x, ((max_length - len(x), 0), )) for x in batch])
     return torch.from_numpy(text_batch)
+
 
 class BookCorpusDataModule(pl.LightningDataModule):
     def __init__(self, data_path, batch_size=128, sentences=None, word_dict=None,

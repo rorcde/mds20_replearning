@@ -1,3 +1,5 @@
+from collections import Counter
+
 from nltk import word_tokenize
 
 import torch
@@ -15,19 +17,26 @@ def get_tokenized_text(text):
     return tokenized_text
 
 
-def build_vocabulary(tokenized_text, pad_token='[PAD]', unk_token='[UNK]', eos_token='[EOS]'):
-    all_words = [pad_token, unk_token, eos_token] + list(set([x for sentence in tokenized_text for x in sentence]))
-    w2i_mapping = {v: k for k, v in enumerate(all_words)}
+def build_vocabulary(tokenized_text, vocab_size=None, pad_token='[PAD]', unk_token='[UNK]', eos_token='[EOS]'):
+    counter = Counter()
+
+    for s in tokenized_text:
+        counter.update(s)
+    all_words = [pad_token, unk_token, eos_token] + [x[0] for x in counter.most_common(vocab_size)]
+    w2i_mapping = {v: k for k, v in enumerate(all_words[:vocab_size])}
     return w2i_mapping
 
 
 class PosNegDataset(data.Dataset):
-    def __init__(self, raw_text, labels, w2i_mapping=None, pad_token='[PAD]', unk_token='[UNK]', eos_token='[EOS]'):
+    def __init__(self, raw_text, labels, vocab_size=None, w2i_mapping=None, pad_token='[PAD]', unk_token='[UNK]', eos_token='[EOS]'):
         self.tokenized_text = get_tokenized_text(raw_text)
+
         if w2i_mapping is not None:
             self.w2i_mapping = w2i_mapping
+            self.vocab_size = len(w2i_mapping)
         else:
-            self.w2i_mapping = build_vocabulary(self.tokenized_text, pad_token, unk_token, eos_token)
+            self.w2i_mapping = build_vocabulary(self.tokenized_text, vocab_size, pad_token, unk_token, eos_token)
+            self.vocab_size = vocab_size
 
         self.pad_idx = self.w2i_mapping[pad_token]
         self.unk_idx = self.w2i_mapping[unk_token]
