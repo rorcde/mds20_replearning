@@ -27,9 +27,7 @@ class SkipThoughtsModule(pl.LightningModule):
         output = self.skipthoughts(batch)
         loss = output[0]
 
-        return OrderedDict({
-            'loss': loss,
-        })
+        self.log('loss', loss)
 
     def validation_step(self, batch, batch_idx):
 
@@ -37,7 +35,4 @@ class SkipThoughtsModule(pl.LightningModule):
         loss = output[0]
 
         # do metrics here using output
-
-        return OrderedDict({
-            'loss': loss,
-        })
+        self.log('val_loss', loss)
