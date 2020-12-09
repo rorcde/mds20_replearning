@@ -5,11 +5,13 @@ from torch.optim import Adam
 from cpc.model import PaperEncoder
 import pytorch_lightning as pl
 
+from copy import deepcopy
+
 
 class ClassificationArchitecture(nn.Module):
     def __init__(self, encoder_instance, n_classes=1, freeze=False):
         super(ClassificationArchitecture, self).__init__()
-        self.encoder_instance = encoder_instance.copy()
+        self.encoder_instance = deepcopy(encoder_instance)
         self.encoder_dim = self.encoder_instance.encoder_dim
         self.n_classes = n_classes
 
@@ -23,6 +25,8 @@ class ClassificationArchitecture(nn.Module):
     def forward(self, x):
         x = self.encoder_instance(x)
         x = self.linear_head(x)
+        if self.n_classes == 1:
+            return x.squeeze(-1)
         return x
 
 
@@ -31,6 +35,7 @@ class ClassificationModule(pl.LightningModule):
         super(ClassificationModule, self).__init__()
         self.lr = lr
         self.model = ClassificationArchitecture(encoder_instance=pretrained_encoder, n_classes=1, freeze=freeze)
+        self.valid_acc = pl.metrics.classification.Accuracy(threshold=0)
 
     def configure_optimizers(self):
         return Adam(self.parameters(), lr=self.lr)
@@ -40,10 +45,9 @@ class ClassificationModule(pl.LightningModule):
         label_batch = batch[1]
 
         logits = self.model(text_batch)
-        cross_entropy = nn.functional.binary_cross_entropy_with_logits(logits, label_batch)
+        cross_entropy = nn.functional.binary_cross_entropy_with_logits(logits, label_batch.float())
 
         self.log('cross_entropy', cross_entropy)
-
         return cross_entropy
 
     def validation_step(self, batch, batch_idx):
@@ -51,9 +55,10 @@ class ClassificationModule(pl.LightningModule):
         label_batch = batch[1]
 
         logits = self.model(text_batch)
-        cross_entropy = nn.functional.binary_cross_entropy_with_logits(logits, label_batch)
+        cross_entropy = nn.functional.binary_cross_entropy_with_logits(logits, label_batch.float())
 
         self.log('val_cross_entropy', cross_entropy)
+        self.log('val_accuracy', self.valid_acc(logits, label_batch))
 
         return cross_entropy
 
