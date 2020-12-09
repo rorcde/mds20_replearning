@@ -1,3 +1,4 @@
+import torch
 from torch import nn
 from .encoder import PaperEncoder
 from .nce import info_nce
@@ -24,13 +25,15 @@ class AutoRegressiveModel(nn.Module):
 
 
 class CPC(nn.Module):
-    def __init__(self, vocab_size, emb_dim=620, enc_dim=2400, ar_dim=2400, kernel_size=1, pad_idx=0):
+    def __init__(self, vocab_size, emb_dim=620, enc_dim=2400, ar_dim=2400, kernel_size=1, pad_idx=0,
+                 reshape_before_ar=1):
         super(CPC, self).__init__()
 
         self.vocab_size = vocab_size
         self.emb_dim = emb_dim
         self.enc_dim = enc_dim
         self.ar_dim = ar_dim
+        self.reshape_before_ar = reshape_before_ar
 
         self.encoder = PaperEncoder(
             vocab_size=self.vocab_size,
@@ -47,8 +50,10 @@ class CPC(nn.Module):
         batch - sequences x encoder_dim
         """
         enc = self.encoder(batch)
-        inp_enc, outp_enc = enc[:-k], enc[k:]
 
-        predicted_enc = self.ar(inp_enc.unsqueeze(0)).squeeze(0)  # TODO: batch learning
+        enc = torch.reshape(enc, (self.reshape_before_ar, -1, self.enc_dim))  # reshape into batches to speed-up ar
+        inp_enc, outp_enc = enc[:, :-k], enc[:, k:]
+
+        predicted_enc = self.ar(inp_enc)
 
         return info_nce(predicted_enc, outp_enc)
