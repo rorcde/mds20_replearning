@@ -10,13 +10,24 @@ from itertools import chain
 
 
 class PosNegDataModule(pl.LightningDataModule):
-    def __init__(self, batch_size: int, load_func: Callable, data_path: Union[str, Path], url=None, w2i_mapping=None,
+    """
+    data_module = PosNegDataModule(128, load_polarity, '/Users/vs/mds20_replearning/data/txt_sentoken',
+                               url='http://www.cs.cornell.edu/people/pabo/movie-review-data/review_polarity.tar.gz',
+                               download_root = '/Users/vs/mds20_replearning/data/',
+                               filename = 'review_polarity',
+                               w2i_mapping=predefined_vocab_mapping, valid_split=0.3)
+    """
+    def __init__(self, batch_size: int, load_func: Callable, data_path: Union[str, Path], url=None, download_root=None,
+                 filename=None,
+                 w2i_mapping=None,
                  valid_split=0):
         super(PosNegDataModule, self).__init__()
         self.batch_size = batch_size
         self.load_func = load_func
         self.data_path = Path(data_path)
         self.url = url
+        self.download_root = download_root
+        self.filename = filename
         self.w2i_mapping = w2i_mapping
 
         self.valid_split = valid_split
@@ -31,7 +42,7 @@ class PosNegDataModule(pl.LightningDataModule):
     def prepare_data(self):
         # download
         if not self.data_path.exists():
-            download_and_extract_archive(url=self.url, extract_root=self.data_path)
+            download_and_extract_archive(url=self.url, download_root=self.download_root)
 
     def setup(self, stage=None):
         pos, neg = self.load_func(self.data_path)
