@@ -12,20 +12,24 @@ Some preliminary versions of our code are already available! To launch the exper
 
 ```python
 import sys
-sys.path.append('path_to_folder_where_repo_lies')
-sys.path.append('path_to_folder_where_repo_lies'+'mds20_replearning')
+sys.path.append('/Users/vs/')  # your repo with mds20_replearning
+sys.path.append('/Users/vs/'+'mds20_replearning')   # same
 
 import pytorch_lightning as pl
-from mds20_replearning.scripts.pl_data import PosNegDataModule
-from mds20_replearning.scripts.pl_model import CPCModel
+from mds20_replearning.scripts.pl_data import DefaultDataModule
+from mds20_replearning.scripts.cpc.pl_model import CPCModel
 from mds20_replearning.data.language.load import load_polarity
 
-model = CPCModel(predefined_vocab_size, emb_dim=620, enc_dim=2400, ar_dim=2400, kernel_size=5, lr=2e-4) 
-data_module = PosNegDataModule(128, load_polarity, 'path_to_polarity_data', 
-                               w2i_mapping=predefined_vocab_mapping, valid_split=0.3)
+import nltk
+nltk.download('punkt')  # download if haven't yet
+
+vocab_size = 20000
+
+model = CPCModel(vocab_size, emb_dim=620, enc_dim=2400, ar_dim=2400, kernel_size=5, lr=2e-4) 
+bookcorpus = DefaultDataModule(128, "/Users/vs/mds20_replearning/data/language/part_book_corpus.txt", valid_split=0.1, vocab_size=vocab_size)  # path to bookcorpus data
 
 trainer = pl.Trainer()  # set required resources here
-trainer.fit(model, datamodule=data_module)
+trainer.fit(model, datamodule=bookcorpus)
 ```
 
 ## Previous implementations
