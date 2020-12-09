@@ -35,7 +35,7 @@ class ClassificationModule(pl.LightningModule):
         super(ClassificationModule, self).__init__()
         self.lr = lr
         self.model = ClassificationArchitecture(encoder_instance=pretrained_encoder, n_classes=1, freeze=freeze)
-        self.valid_acc = pl.metrics.classification.Accuracy(threshold=0)
+        self.valid_acc = pl.metrics.classification.Accuracy(threshold=0)  # zero threshold due to logits format of the output
 
     def configure_optimizers(self):
         return Adam(self.parameters(), lr=self.lr)
@@ -47,7 +47,7 @@ class ClassificationModule(pl.LightningModule):
         logits = self.model(text_batch)
         cross_entropy = nn.functional.binary_cross_entropy_with_logits(logits, label_batch.float())
 
-        self.log('cross_entropy', cross_entropy)
+        self.log('cross_entropy', cross_entropy, prog_bar=True, logger=True)
         return cross_entropy
 
     def validation_step(self, batch, batch_idx):
@@ -57,8 +57,8 @@ class ClassificationModule(pl.LightningModule):
         logits = self.model(text_batch)
         cross_entropy = nn.functional.binary_cross_entropy_with_logits(logits, label_batch.float())
 
-        self.log('val_cross_entropy', cross_entropy)
-        self.log('val_accuracy', self.valid_acc(logits, label_batch))
+        self.log('val_cross_entropy', cross_entropy, prog_bar=True, logger=True)
+        self.log('val_accuracy', self.valid_acc(logits, label_batch), prog_bar=True, logger=True)
 
         return cross_entropy
 
