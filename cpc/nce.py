@@ -7,9 +7,11 @@ def info_nce(predicted_samples, encoded_samples):
         predicted_samples - next sequences, predicted from context representation
         encoded_samples - golden "next" sentences, passed through encoder
 
-        returns mean info-nce loss per batch
+        returns mean info-nce loss
     """
-
+    if predicted_samples.ndim == 2 and encoded_samples.ndim == 2:
+        predicted_samples = predicted_samples.unsqueeze(0)
+        encoded_samples = encoded_samples.unsqueeze(0)
     # (batch, seq_len, enc_dim) x (batch, seq_len, enc_dim).T-> (batch, batch)
     scores = torch.bmm(predicted_samples,
                        encoded_samples.transpose(-2, -1))
