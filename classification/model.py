@@ -1,8 +1,6 @@
-import torch
 from torch import nn
 from torch.optim import Adam
 
-from cpc.model import PaperEncoder
 import pytorch_lightning as pl
 
 from copy import deepcopy
