@@ -20,16 +20,14 @@ def orthogonal_initialization(gru_cell, gain=1):
 
 
 class SkipThoughtDecoder(nn.Module):
-    def __init__(self, embedding, batch_first):
-        super(SkipThoughtDecoder).__init__()
+    def __init__(self, encoder_dim, embedding_dim):
+        super(SkipThoughtDecoder, self).__init__()
 
-        self.embedding = embedding
-        self.encoder_dim = self.embedding.encoder_dim
-        self.embedding_dim = self.embedding.embedding_dim
-        self.vocab_size = self.embedding.vocab_size
+        self.encoder_dim = encoder_dim
+        self.embedding_dim = embedding_dim
 
         self.rnn = nn.GRU(self.encoder_dim + self.embedding_dim, self.embedding_dim,
-                          bidirectional=False, batch_first=batch_first)
+                          bidirectional=False, batch_first=False)
 
     def initialize_parameters(self):
         """
@@ -37,7 +35,6 @@ class SkipThoughtDecoder(nn.Module):
         Initialize non-recurrent weights from a uniform distribution in [-0.1,0.1].
         """
         orthogonal_initialization(self.rnn)
-        nn.init.uniform_(self.output_layer.weight.data, -0.1, 0.1)
 
     def forward(self, thought_vectors, word_embeddings):
         seq_len = word_embeddings.shape[0]  # the time dimension is supposed to be the first one
@@ -47,9 +44,11 @@ class SkipThoughtDecoder(nn.Module):
                 thought_vectors.unsqueeze(0).expand(seq_len, -1, -1)
             ],
             dim=-1)
-        _, h = self.rnn(rnn_input)
+        output, h = self.rnn(rnn_input)
 
-        predicted_word = torch.dot(word_embeddings, h)
+        
+        predicted_word = torch.mm(word_embeddings, output)
+        print(predicted_word.shape)
 
         #predicted_word = self.output_layer(predicted_embeddings)
         #predicted_word = predicted_word.transpose(0, 1)

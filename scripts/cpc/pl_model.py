@@ -27,14 +27,17 @@ class CPCModel(pl.LightningModule):
         return self.cpc(batch)
 
     def training_step(self, batch, batch_idx):
-        text_batch = batch
+        text_batch = batch[0]
         info_nce_loss = self.cpc(text_batch)
         self.log('info_nce', info_nce_loss)
+        torch.cuda.empty_cache()
+        
 
         return info_nce_loss
 
     def validation_step(self, batch, batch_idx):
-        text_batch = batch
+        text_batch = batch[0]
         info_nce_loss = self.cpc(text_batch)
+        torch.cuda.empty_cache()
 
         self.log('val_info_nce', info_nce_loss)
