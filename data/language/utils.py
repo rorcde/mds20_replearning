@@ -19,7 +19,7 @@ def build_vocabulary(sentences, vocab_size=None, pad_token='[PAD]', unk_token='[
 
 
 class DefaultDataset(data.Dataset):
-    def __init__(self, raw_text, labels=None, vocab_size=None, w2i_mapping=None, pad_token='[PAD]',
+    def __init__(self, raw_text, labels=None, vocab_size=None, w2i_mapping=None, add_eos=False, pad_token='[PAD]',
                  unk_token='[UNK]', eos_token='[EOS]'):
         self.sentences = raw_text
 
@@ -33,6 +33,7 @@ class DefaultDataset(data.Dataset):
         self.pad_idx = self.w2i_mapping[pad_token]
         self.unk_idx = self.w2i_mapping[unk_token]
         self.eos_idx = self.w2i_mapping[eos_token]
+        self.add_eos = self.add_eos  # used in seq2seq for proper decoding
         self.labels = labels
         self.vocab_size = len(self.w2i_mapping)
 
@@ -40,7 +41,8 @@ class DefaultDataset(data.Dataset):
         return len(self.sentences)
 
     def __getitem__(self, i):
-        return [self.w2i_mapping.get(w, self.unk_idx) for w in wordpunct_tokenize(self.sentences[i])], \
+        return [self.eos_idx]*self.add_eos + \
+               [self.w2i_mapping.get(w, self.unk_idx) for w in wordpunct_tokenize(self.sentences[i])], \
                self.labels[i] if self.labels is not None else np.nan
 
 
