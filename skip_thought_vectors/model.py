@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch.nn.functional as F
 from .encoder import SkipThoughtEncoder, SkipThoughtEmbedding
-from .decoder import SkipThoughtDecoder
+from .decoder import SkipThoughtDecoder, SkipThoughtOutput
 import torch
 
 class SkipThoughtModel(nn.Module):
@@ -15,15 +15,19 @@ class SkipThoughtModel(nn.Module):
 
         self.embedding = SkipThoughtEmbedding(self.vocab_size, self.embedding_dim, weights, self.encoder_dim, pad_idx)
         self.encoder = SkipThoughtEncoder(self.embedding_dim, self.encoder_dim)
-        self.decoder_next = SkipThoughtDecoder(self.embedding_dim, self.encoder_dim)
-        self.decoder_previous = SkipThoughtDecoder(self.embedding_dim, self.encoder_dim)
+        self.decoder_next = SkipThoughtDecoder(self.encoder_dim, self.embedding_dim)
+        self.decoder_previous = SkipThoughtDecoder(self.encoder_dim, self.embedding_dim)
+        self.output_layer = SkipThoughtOutput(self.embedding_dim, self.vocab_size)
+        
 
     def initialize_parameters(self):
         self.encoder.initialize_parameters()
         self.embedding.initialize_parameters()
         self.decoder_next.initialize_parameters()
         self.decoder_previous.initialize_parameters()
+        self.output_layer.initialize_parameters()
 
+        
     def __calculate_loss(self, predictions, input_sentences, padding_idx=0):
         loss = F.cross_entropy(predictions, input_sentences, ignore_index=padding_idx)
         return loss
@@ -36,9 +40,14 @@ class SkipThoughtModel(nn.Module):
 
         predicted_previous = self.decoder_previous(thought_vectors[1:, :], word_embeddings[:, :-1, :])
         predicted_next = self.decoder_next(thought_vectors[:-1, :], word_embeddings[:, 1:, :])
-
-        loss_previous = self.__calculate_loss(predicted_previous[:, :-1], input_sentences[1:, :])
-        loss_next = self.__calculate_loss(predicted_next, input_sentences[:-1, :])
+        
+        predicted_previous = self.output_layer(predicted_previous)
+        predicted_next = self.output_layer(predicted_next)
+        
+        input_sentences = torch.transpose(input_sentences, 0, 1) 
+        
+        loss_previous = self.__calculate_loss(predicted_previous[:, :-1].reshape(-1, self.vocab_size), input_sentences[1:, 1:].reshape(-1))
+        loss_next = self.__calculate_loss(predicted_next[:, :-1].reshape(-1, self.vocab_size), input_sentences[:-1, 1:].reshape(-1))
         loss = loss_next + loss_previous
 
         _, predicted_previous_ids = predicted_previous[0].max(1)

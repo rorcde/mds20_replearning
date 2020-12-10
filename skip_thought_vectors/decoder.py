@@ -46,11 +46,22 @@ class SkipThoughtDecoder(nn.Module):
             dim=-1)
         output, h = self.rnn(rnn_input)
 
+        return output
+
+class SkipThoughtOutput(nn.Module):
+    def __init__(self, embedding_dim, vocab_size):
+        super(SkipThoughtOutput, self).__init__()
+        self.embedding_dim = embedding_dim
+        self.vocab_size = vocab_size
         
-        predicted_word = torch.mm(word_embeddings, output)
-        print(predicted_word.shape)
+        self.linear = nn.Linear(self.embedding_dim, self.vocab_size)
+        
+    def initialize_parameters(self):
+        nn.init.uniform_(self.linear.weight, -0.1, 0.1)
+        
 
-        #predicted_word = self.output_layer(predicted_embeddings)
-        #predicted_word = predicted_word.transpose(0, 1)
-
-        return predicted_word
+    def forward(self, predicted_embedding):
+        seq_len, batch_size, decoder_dim = predicted_embedding.size()
+        predicted_embedding = self.linear(predicted_embedding.reshape(-1, decoder_dim))
+        predicted_embedding = predicted_embedding.reshape(seq_len, batch_size, -1).transpose(0, 1).contiguous()        
+        return predicted_embedding
