@@ -25,15 +25,12 @@ The repository has the following structure:
 | &boxvr;&nbsp; skip_thoughts | scripts for stv training via Pythorch Lighning
 | [skip_thought_vectors](https://github.com/rodrigorivera/mds20_replearning/tree/master/skip_thought_vectors) | our implementation of STV model
 
-## CPC model 
-
-### Our progress
+## Implementations
 
 To train models one need to run corresponding notebook in the folder [notebooks](https://github.com/rodrigorivera/mds20_replearning/tree/master/notebooks) 
-train_cpc.ipyng - the CPC model training
-train_cpc.ipyng - the STV model training
-train_linear_model.ipynb - evaluate representation via linear classification
-
+* train_cpc.ipyng - the CPC model training
+* train_cpc.ipyng - the STV model training
+* train_linear_model.ipynb - evaluate representation via linear classification
 
 ## References
 <a id="1">[1]</a> 
