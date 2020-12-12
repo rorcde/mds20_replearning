@@ -92,6 +92,6 @@ The Book Corpus dataset containes about more than 17800 books from various categ
     
 * Dataset:
 
-<img src="https://raw.githubusercontent.com/rodrigorivera/mds20_replearning/master/data/imgs/money_transaction_tabel.png?token=AMWMJ6J4QE7SGAMULBQLJE27ZEUCY" width='500'>
+<img src="https://raw.githubusercontent.com/rodrigorivera/mds20_replearning/master/data/imgs/money_transaction_tabel.png?token=AH237P5L7Y3OASJHUEFRREK73ZGFE" width='500'>
 
-<img src="https://raw.githubusercontent.com/rodrigorivera/mds20_replearning/master/data/imgs/pop_catagories_fig.png?token=AMWMJ6M4U3MHK3LCAE2JBT27ZEUN4" width='500'>
+<img src="https://raw.githubusercontent.com/rodrigorivera/mds20_replearning/master/data/imgs/pop_catagories_fig.png?token=AH237P2ZR3W2YNMUVKBD5FK73ZGHK" width='500'>
