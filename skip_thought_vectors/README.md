@@ -2,7 +2,7 @@
 Skip-thought vectors model is the alternative unsupervised approach for representation learning and the main competitor to the CPC model [[2]](#2). We will use it as a baseline to estimate the performance of our CPC model implementation. 
 Nevertheless, it is important to note that in the original paper by Oord A [[1]](#1). CPC can't significantly beat Skip-thought model. 
 
-We will use this implementation as a starting point for own model. 
+We have used this implementation as a starting point for own model. 
 * https://github.com/sanyam5/skip-thoughts
 
 1. The most significant improvement is bringing the code in accordance with the article (using paper's embedding dimensions, using GRU instead of LSTM, initializing weights properly)
