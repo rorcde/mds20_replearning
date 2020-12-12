@@ -9,21 +9,21 @@ The repository has the following structure:
 ---
 | Path  | Description
 | :---  | :----------
-| [classification] (https://github.com/rodrigorivera/mds20_replearning/tree/master/classification) | modules for evaluating representation via classification task
-| [cpc] (https://github.com/rodrigorivera/mds20_replearning/tree/master/cpc) | our implementation of CPC model
+| [classification](https://github.com/rodrigorivera/mds20_replearning/tree/master/classification) | modules for evaluating representation via classification task
+| [cpc](https://github.com/rodrigorivera/mds20_replearning/tree/master/cpc) | our implementation of CPC model
 | data | utility for loading and preprocessing data
 | &boxvr;&nbsp; imgs | technical folder
-| &boxvr;&nbsp; [language] (https://github.com/rodrigorivera/mds20_replearning/tree/master/data/language) | utility to preprocess NLP data, custom Dataset for NLP data 
+| &boxvr;&nbsp; [language](https://github.com/rodrigorivera/mds20_replearning/tree/master/data/language) | utility to preprocess NLP data, custom Dataset for NLP data 
 | &boxvr;&nbsp; notebooks | notebooks for loading and observing considered datasets
-| &boxvr;&nbsp; notebooks | utility to preprocess transaction data, custom Dataset for transaction data (*in progress*)
+| &boxvr;&nbsp; transaction | utility to preprocess transaction data, custom Dataset for transaction data (*in progress*)
 | implementations | existing implementation for cpc model and the baseline (stv model) 
 | &boxvr;&nbsp; [cpc_model_for_nlp](https://github.com/rodrigorivera/mds20_replearning/tree/master/implementations/cpc_model_for_nlp) | Pytorch implementation of the CPC model for NLP data
 | &boxvr;&nbsp; [baseline_skip_thoughts_vectors](https://github.com/rodrigorivera/mds20_replearning/tree/master/implementations/baseline_skip_thoughts_vectors) | Pytorch implementatio for Skip-Thought vectors (model to compare with CPC)
-| [notebooks] (https://github.com/rodrigorivera/mds20_replearning/tree/master/notebooks) | notebooks for training models
-| [scripts] (https://github.com/rodrigorivera/mds20_replearning/tree/master/notebooks) | scripts for training via Pythorch Lighning
+| [notebooks](https://github.com/rodrigorivera/mds20_replearning/tree/master/notebooks) | notebooks for training models
+| [scripts](https://github.com/rodrigorivera/mds20_replearning/tree/master/notebooks) | scripts for training via Pythorch Lighning
 | &boxvr;&nbsp; cpc | scripts for cpc training via Pythorch Lighning
 | &boxvr;&nbsp; skip_thoughts | scripts for stv training via Pythorch Lighning
-| [skip_thought_vectors] (https://github.com/rodrigorivera/mds20_replearning/tree/master/skip_thought_vectors) | our implementation of STV model
+| [skip_thought_vectors](https://github.com/rodrigorivera/mds20_replearning/tree/master/skip_thought_vectors) | our implementation of STV model
 
 ## CPC model 
 
