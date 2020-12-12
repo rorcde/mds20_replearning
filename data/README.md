@@ -10,7 +10,7 @@ The link to Movie Review dataset is [here](http://www.cs.cornell.edu/people/pabo
 `The dataset can be downloaded by running notebooks/raw_data.ipynb`
 
 
-<img src="https://raw.githubusercontent.com/rodrigorivera/mds20_replearning/master/data/imgs/movie_review_dataset.png?token=AMWMJ6J2NO62PRZG3YE762C7ZEHRU" width='600'>
+<img src="https://raw.githubusercontent.com/rodrigorivera/mds20_replearning/master/data/imgs/movie_review_dataset.png" width='600'>
 
 ### 1.1_ Polarity_html :
 
