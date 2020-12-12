@@ -62,6 +62,6 @@ class SkipThoughtOutput(nn.Module):
 
     def forward(self, predicted_embedding):
         seq_len, batch_size, decoder_dim = predicted_embedding.size()
-        predicted_embedding = self.linear(predicted_embedding.reshape(-1, decoder_dim))
-        predicted_embedding = predicted_embedding.reshape(seq_len, batch_size, -1).transpose(0, 1).contiguous()        
+        predicted_embedding = self.linear(predicted_embedding.view(-1, decoder_dim)).view(seq_len, batch_size, -1)
+        predicted_embedding = predicted_embedding.transpose(0, 1).contiguous()        
         return predicted_embedding

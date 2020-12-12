@@ -7,11 +7,13 @@ from torch.utils.data import Subset, DataLoader
 from torchvision.datasets.utils import download_and_extract_archive
 
 from data.language.utils import DefaultDataset, default_collate_fn
+import random
+random.seed(123)
 
 
 def _default_load_func(data_path):  # suitable for bookcorpus
     with open(data_path, 'r') as fp:
-        return '\n'.join(fp.readlines()).split('\n'), None
+        return ''.join(fp.readlines()).split('\n'), None
 
 
 class DefaultDataModule(pl.LightningDataModule):
@@ -57,13 +59,14 @@ class DefaultDataModule(pl.LightningDataModule):
     def setup(self, stage=None):
         self.dataset = self._get_dataset()
         _idx = np.arange(len(self.dataset))
-        self._train_idx = _idx[:-int(self.valid_split*len(self.dataset))]
+        self._train_idx = random.sample(list(_idx), int(self.valid_split*len(self.dataset))) 
+        #self._train_idx = _idx[:-int(self.valid_split*len(self.dataset))]
         self.train_ds = Subset(self.dataset, self._train_idx)
         self._valid_idx = np.setdiff1d(_idx, self._train_idx)
         self.valid_ds = Subset(self.dataset, self._valid_idx)
 
     def train_dataloader(self):
-        return DataLoader(self.train_ds, batch_size=self.batch_size, collate_fn=default_collate_fn, shuffle=self.shuffle)
+        return DataLoader(self.train_ds, batch_size=self.batch_size, collate_fn=default_collate_fn, shuffle=self.shuffle, num_workers=2, pin_memory=True)
 
     def val_dataloader(self):
         return DataLoader(self.valid_ds, batch_size=self.batch_size, collate_fn=default_collate_fn, shuffle=False)

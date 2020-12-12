@@ -26,8 +26,8 @@ class SkipThoughtsModule(pl.LightningModule):
         output = self.skipthoughts(batch[0])
         loss = output[0]
 
-        self.log('loss', loss, prog_bar=True, logger=True)
         torch.cuda.empty_cache()
+        return loss
         
 
     def validation_step(self, batch, batch_idx):
@@ -40,6 +40,7 @@ class SkipThoughtsModule(pl.LightningModule):
         if batch_idx == 0:
             return output[3:]
         torch.cuda.empty_cache()
+        return loss
 
     def validation_epoch_end(self, outputs):
         if self.i2w_mapping is not None:

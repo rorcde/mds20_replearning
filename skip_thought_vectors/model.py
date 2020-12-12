@@ -37,17 +37,15 @@ class SkipThoughtModel(nn.Module):
             input_sentences = torch.transpose(input_sentences, 0, 1) 
         word_embeddings = self.embedding(input_sentences)
         thought_vectors, word_embeddings = self.encoder(word_embeddings)
-
         predicted_previous = self.decoder_previous(thought_vectors[1:, :], word_embeddings[:, :-1, :])
-        predicted_next = self.decoder_next(thought_vectors[:-1, :], word_embeddings[:, 1:, :])
-        
-        predicted_previous = self.output_layer(predicted_previous)
-        predicted_next = self.output_layer(predicted_next)
-        
+        predicted_next = self.decoder_next(thought_vectors[:-1, :], word_embeddings[:, 1:, :])        
+        predicted_previous = self.output_layer(predicted_previous)[:, :-1]
+        predicted_next = self.output_layer(predicted_next)[:, :-1]
+
         input_sentences = torch.transpose(input_sentences, 0, 1) 
+        loss_previous = self.__calculate_loss(predicted_previous.reshape(-1, self.vocab_size), input_sentences[1:, 1:].reshape(-1))
+        loss_next = self.__calculate_loss(predicted_next.reshape(-1, self.vocab_size), input_sentences[:-1, 1:].reshape(-1))
         
-        loss_previous = self.__calculate_loss(predicted_previous[:, :-1].reshape(-1, self.vocab_size), input_sentences[1:, 1:].reshape(-1))
-        loss_next = self.__calculate_loss(predicted_next[:, :-1].reshape(-1, self.vocab_size), input_sentences[:-1, 1:].reshape(-1))
         loss = loss_next + loss_previous
 
         _, predicted_previous_ids = predicted_previous[0].max(1)
