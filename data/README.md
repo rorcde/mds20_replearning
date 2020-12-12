@@ -10,7 +10,7 @@ The link to Movie Review dataset is [here](http://www.cs.cornell.edu/people/pabo
 `The dataset can be downloaded by running notebooks/raw_data.ipynb`
 
 
-<img src="https://raw.githubusercontent.com/rodrigorivera/mds20_replearning/master/data/imgs/movie_review_dataset.png" width='600'>
+<img src="https://raw.githubusercontent.com/rodrigorivera/mds20_replearning/master/data/imgs/movie_review%20dataset.png?token=AH237P4X67XDB3HIRWJFBJS73ZF32" width='600'>
 
 ### 1.1_ Polarity_html :
 
@@ -68,19 +68,19 @@ The link to Movie Review dataset is [here](http://www.cs.cornell.edu/people/pabo
 
 The Book Corpus dataset containes about more than 17800 books from various categories. the dataset which we used in our worde combined all these books in two `.txt` file namely `books_large_p1` and `books_large_p2`.
 
-`The dataset can be downloaded by running data/load_book_corpus_paper.ipynb`
+`The dataset can be downloaded by running data/notebooks/load_book_corpus_paper.ipynb`
 
 ### tabel below is statistical review from this dataset.
 * in original [paper](https://arxiv.org/abs/1506.06726) the numbers are slightly different, the reason for this differences is that in main paper numbers, points `.`  at the end of sentences and some semi-words like `half-ling` considered as a word however we used standard pytorch tokenizer which doesn't counts them as a token. 
 
 <img src="https://raw.githubusercontent.com/rodrigorivera/mds20_replearning/master/data/imgs/book_corpus.png?token=AMWMJ6PUAQTM4XM4LF4KZEC7ZELYE" width='600'>
 
-* tabel is derived from `data/book_corpus_description.ipynb`
+* tabel is derived from `data/notebooks/book_corpus_description.ipynb`
 
 
 ## 3_ Money tracsactions dataset:
 
-`The description can be found in data/Money_transaction_description.ipynb`
+`The description can be found in data/notebooks/Money_transaction_description.ipynb`
 
 
 * the dataset can be downloaded from this [Link](https://www.kaggle.com/c/python-and-analyze-data-final-project)
