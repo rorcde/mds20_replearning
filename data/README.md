@@ -73,7 +73,7 @@ The Book Corpus dataset containes about more than 17800 books from various categ
 ### tabel below is statistical review from this dataset.
 * in original [paper](https://arxiv.org/abs/1506.06726) the numbers are slightly different, the reason for this differences is that in main paper numbers, points `.`  at the end of sentences and some semi-words like `half-ling` considered as a word however we used standard pytorch tokenizer which doesn't counts them as a token. 
 
-<img src="https://raw.githubusercontent.com/rodrigorivera/mds20_replearning/master/data/imgs/book_corpus.png?token=AMWMJ6PUAQTM4XM4LF4KZEC7ZELYE" width='600'>
+<img src="https://raw.githubusercontent.com/rodrigorivera/mds20_replearning/master/data/imgs/book_corpus.png?token=AH237P4NBSTKPZXNLTMSI2C73ZGAY" width='600'>
 
 * tabel is derived from `data/notebooks/book_corpus_description.ipynb`
 
