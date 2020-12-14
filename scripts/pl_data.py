@@ -59,8 +59,10 @@ class DefaultDataModule(pl.LightningDataModule):
     def setup(self, stage=None):
         self.dataset = self._get_dataset()
         _idx = np.arange(len(self.dataset))
-        self._train_idx = random.sample(list(_idx), int(self.valid_split*len(self.dataset))) 
-        #self._train_idx = _idx[:-int(self.valid_split*len(self.dataset))]
+        if self.shuffle:
+            self._train_idx = random.sample(list(_idx), int((1 - self.valid_split)*len(self.dataset))) 
+        else:
+            self._train_idx = _idx[:-int(self.valid_split*len(self.dataset))]
         self.train_ds = Subset(self.dataset, self._train_idx)
         self._valid_idx = np.setdiff1d(_idx, self._train_idx)
         self.valid_ds = Subset(self.dataset, self._valid_idx)

@@ -20,13 +20,14 @@ def orthogonal_initialization(gru_cell, gain=1):
 
 
 class SkipThoughtEmbedding(nn.Module):
-    def __init__(self, vocab_size, embedding_dim=620,  weights=None, encoder_dim=2400, pad_idx=0):
+    def __init__(self, vocab_size, embedding_dim=620,  weights=None, encoder_dim=2400, pad_idx=0, batch_first=True):
         
         super(SkipThoughtEmbedding, self).__init__()
 
         self.vocab_size = vocab_size
         self.embedding_dim = embedding_dim
         self.encoder_dim = encoder_dim
+        self.batch_first = batch_first
 
         if weights is None:
             self.embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=pad_idx)
@@ -41,6 +42,8 @@ class SkipThoughtEmbedding(nn.Module):
         nn.init.uniform_(self.embedding.weight, -0.1, 0.1)
             
     def forward(self, input_sentences):
+        if self.batch_first:
+            input_sentences = torch.transpose(input_sentences, 0, 1) 
         word_embeddings = self.embedding(input_sentences)
         return word_embeddings
 
@@ -49,6 +52,8 @@ class SkipThoughtEncoder(nn.Module):
     def __init__(self, embedding_dim, encoder_dim):
         super(SkipThoughtEncoder, self).__init__()
         
+        self.embedding_dim = embedding_dim
+        self.encoder_dim = encoder_dim        
         self.rnn = nn.GRU(embedding_dim, encoder_dim,
                           bidirectional=False, batch_first=False)
 
@@ -64,4 +69,4 @@ class SkipThoughtEncoder(nn.Module):
 
         thought_vectors = h[-1]
 
-        return thought_vectors, word_embeddings
+        return thought_vectors

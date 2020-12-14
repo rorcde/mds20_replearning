@@ -13,7 +13,7 @@ class SkipThoughtModel(nn.Module):
         self.encoder_dim = encoder_dim
         self.batch_first = batch_first
 
-        self.embedding = SkipThoughtEmbedding(self.vocab_size, self.embedding_dim, weights, self.encoder_dim, pad_idx)
+        self.embedding = SkipThoughtEmbedding(self.vocab_size, self.embedding_dim, weights, self.encoder_dim, pad_idx, self.batch_first)
         self.encoder = SkipThoughtEncoder(self.embedding_dim, self.encoder_dim)
         self.decoder_next = SkipThoughtDecoder(self.encoder_dim, self.embedding_dim)
         self.decoder_previous = SkipThoughtDecoder(self.encoder_dim, self.embedding_dim)
@@ -33,10 +33,10 @@ class SkipThoughtModel(nn.Module):
         return loss
 
     def forward(self, input_sentences, *args):
-        if self.batch_first:
-            input_sentences = torch.transpose(input_sentences, 0, 1) 
+        #if self.batch_first:
+        #    input_sentences = torch.transpose(input_sentences, 0, 1) 
         word_embeddings = self.embedding(input_sentences)
-        thought_vectors, word_embeddings = self.encoder(word_embeddings)
+        thought_vectors = self.encoder(word_embeddings)
         predicted_previous = self.decoder_previous(thought_vectors[1:, :], word_embeddings[:, :-1, :])
         predicted_next = self.decoder_next(thought_vectors[:-1, :], word_embeddings[:, 1:, :])        
         predicted_previous = self.output_layer(predicted_previous)[:, :-1]
