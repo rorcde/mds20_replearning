@@ -7,6 +7,8 @@ from torch.utils.data import Subset, DataLoader
 from torchvision.datasets.utils import download_and_extract_archive
 
 from data.language.utils import DefaultDataset, default_collate_fn
+from data.transactions.utils import TransactionsDataset
+
 import random
 random.seed(123)
 
@@ -69,6 +71,48 @@ class DefaultDataModule(pl.LightningDataModule):
 
     def train_dataloader(self):
         return DataLoader(self.train_ds, batch_size=self.batch_size, collate_fn=default_collate_fn, shuffle=self.shuffle, num_workers=2, pin_memory=True)
+
+    def val_dataloader(self):
+        return DataLoader(self.valid_ds, batch_size=self.batch_size, collate_fn=default_collate_fn, shuffle=False)
+
+
+class TransactionsDataModule(pl.LightningDataModule):
+    def __init__(self, batch_size: int,
+                 transactions, mcc_codes, gender,
+                 vocab_size=20000,
+                 w2i_mapping=None,
+                 shuffle=False,
+                 valid_split=0):
+        super(TransactionsDataModule, self).__init__()
+        self.batch_size = batch_size
+
+        self.w2i_mapping = w2i_mapping
+        self.valid_split = valid_split
+        self.vocab_size = vocab_size
+        self.shuffle = shuffle
+        self.dataset = TransactionsDataset(transactions, mcc_codes, gender,
+                                           w2i_mapping=w2i_mapping,
+                                           vocab_size=vocab_size)
+
+        # defined later in setup
+        self._train_idx = None
+        self._valid_idx = None
+        self.train_ds = None
+        self.valid_ds = None
+
+    def setup(self, stage=None):
+        _idx = np.arange(len(self.dataset))
+        if self.shuffle:
+            self._train_idx = random.sample(list(_idx), int((1 - self.valid_split)*len(self.dataset)))
+        else:
+            self._train_idx = _idx[:-int(self.valid_split*len(self.dataset))]
+        self.train_ds = Subset(self.dataset, self._train_idx)
+        self._valid_idx = np.setdiff1d(_idx, self._train_idx)
+        self.valid_ds = Subset(self.dataset, self._valid_idx)
+
+    def train_dataloader(self):
+        return DataLoader(self.train_ds, batch_size=self.batch_size, collate_fn=default_collate_fn,
+                          shuffle=self.shuffle, num_workers=2, pin_memory=True)
 
     def val_dataloader(self):
         return DataLoader(self.valid_ds, batch_size=self.batch_size, collate_fn=default_collate_fn, shuffle=False)
