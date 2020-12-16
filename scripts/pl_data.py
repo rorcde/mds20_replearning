@@ -124,7 +124,7 @@ class TransactionsDataModule(pl.LightningDataModule):
 
     def train_dataloader(self):
         return DataLoader(self.train_ds, batch_size=self.batch_size, collate_fn=default_collate_fn,
-                          shuffle=self.shuffle, num_workers=2, pin_memory=True)
+                          shuffle=self.shuffle)
 
     def val_dataloader(self):
         return DataLoader(self.valid_ds, batch_size=self.batch_size, collate_fn=default_collate_fn, shuffle=False)
