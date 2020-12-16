@@ -28,6 +28,7 @@ class DefaultDataModule(pl.LightningDataModule):
                  vocab_size=20000,
                  w2i_mapping=None,
                  shuffle=False,
+                 shuffle_texts=False,
                  valid_split=0):
         super(DefaultDataModule, self).__init__()
         self.batch_size = batch_size
@@ -42,6 +43,7 @@ class DefaultDataModule(pl.LightningDataModule):
         self.valid_split = valid_split
         self.vocab_size = vocab_size
         self.shuffle = shuffle
+        self.shuffle_texts = shuffle_texts
 
         # defined later in setup
         self.dataset = None
@@ -53,7 +55,13 @@ class DefaultDataModule(pl.LightningDataModule):
     def prepare_data(self):
         if not self.data_path.exists():
             download_and_extract_archive(url=self.url, download_root=self.download_root)
-        self.raw_text, self.labels = self.load_func(self.data_path)
+        if self.shuffle_texts:
+            self.raw_text, self.labels, text_idxs = self.load_func(self.data_path, return_textidxs=True)
+            self.raw_text = sum([self.raw_text[x:y] for x, y in zip(text_idxs[:-1], text_idxs[1:])], [])
+            self.labels = sum([self.labels[x:y] for x, y in zip(text_idxs[:-1], text_idxs[1:])], [])
+        else:
+            self.raw_text, self.labels = self.load_func(self.data_path)
+
 
     def _get_dataset(self):
         return DefaultDataset(self.raw_text, labels=self.labels, w2i_mapping=self.w2i_mapping, vocab_size=self.vocab_size)
