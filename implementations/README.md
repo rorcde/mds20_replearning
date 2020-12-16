@@ -13,13 +13,9 @@ However, there is only one Pytorch implementation related to natural language ta
 
 The main part of the last one is [models.py](https://github.com/vgaraujov/CPC-NLP-PyTorch/blob/master/model/models.py). 
 It implements convolutional encoder and model to setup experiment: Encoder united with GRU layer to create context embedding. 
-The implementation of InfoNCE is unclear, however, it is easy to correct it. 
+The implementation of InfoNCE is unclear, however, it is easy to correct it. The [utils folder](https://github.com/vgaraujov/CPC-NLP-PyTorch/tree/master/utils) has all functions necessary to build experiment. The [dataset.py](https://github.com/vgaraujov/CPC-NLP-PyTorch/blob/master/utils/dataset.py) creates two datasets "BookCorpus" and "SentimentAnalysis". It should be refactored before adaptation for MovieReview dataset.
 
 This implementation is located in the folder cpc_model_for_nlp. There you can find more information and the instruction how to run the model.
-
-
-The [utils folder](https://github.com/vgaraujov/CPC-NLP-PyTorch/tree/master/utils) has all functions necessary to build experiment. 
-The [dataset.py](https://github.com/vgaraujov/CPC-NLP-PyTorch/blob/master/utils/dataset.py) creates two datasets "BookCorpus" and "SentimentAnalysis". It should be refactored before adaptation for MovieReview dataset.
 
 ### Skip-thought vectors model
 We will use following implementation as a starting point for own model:
