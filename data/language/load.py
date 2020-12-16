@@ -23,7 +23,8 @@ def load_data(path, name, return_textidxs=False):
     text_idxs = None
     if return_textidxs and name == 'review_polarity':
         pos_len = len(pos)
-        text_idxs = pos_text_idxs + [i+pos_len for i in neg_text_idxs]
+        text_idxs = pos_text_idxs + [i+pos_len for i in neg_text_idxs[1:]]
+
         return text, labels, text_idxs
     else:
         return text, labels

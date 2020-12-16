@@ -57,8 +57,12 @@ class DefaultDataModule(pl.LightningDataModule):
             download_and_extract_archive(url=self.url, download_root=self.download_root)
         if self.shuffle_texts:
             self.raw_text, self.labels, text_idxs = self.load_func(self.data_path, return_textidxs=True)
-            self.raw_text = sum([self.raw_text[x:y] for x, y in zip(text_idxs[:-1], text_idxs[1:])], [])
-            self.labels = sum([self.labels[x:y] for x, y in zip(text_idxs[:-1], text_idxs[1:])], [])
+            intervals = [(x, y) for x, y in zip(text_idxs[:-1], text_idxs[1:])]
+            np.random.shuffle(intervals)
+
+            self.raw_text = [i for j in [self.raw_text[int(x):int(y)] for x, y in intervals] for i in j]
+            self.labels = [i for j in [self.labels[int(x):int(y)] for x, y in intervals] for i in j]
+
         else:
             self.raw_text, self.labels = self.load_func(self.data_path)
 
