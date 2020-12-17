@@ -30,7 +30,10 @@ The repository has the following structure:
 To train models one need to run corresponding notebook in the folder [notebooks](https://github.com/rodrigorivera/mds20_replearning/tree/master/notebooks) 
 * train_cpc.ipyng - the CPC model training
 * train_cpc.ipyng - the STV model training
-* train_linear_model.ipynb - evaluate representation via linear classification
+* train_linear_model_mr_cpc.ipynb - evaluate CPC representation via linear classification
+* train_linear_model_mr_stv.ipynb - evaluate STV representation via linear classification
+
+We provide access to extra files via the link https://drive.google.com/drive/folders/1OAhVCmDprK598DbD83S-LvYHVPzscCMh?usp=sharing
 
 ## References
 <a id="1">[1]</a> 
